@@ -6,7 +6,11 @@ const axiosClient = axios.create({
 });
 
 module.exports = {
-    async getCharactersByName(name){
-       return await axiosClient.get(`?name=rick`).then(result => result.data.results);
+    async getCharactersByNameAndStatus(name, status){
+       return await axiosClient.get(`?name=${name}&status=${status}`)
+       .then(result => result.data.results)
+       .catch(error => {
+           throw "Character not found."
+       });
     }
 }

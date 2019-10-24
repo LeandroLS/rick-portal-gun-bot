@@ -1,12 +1,58 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const characters = require('./RickAndMortyAPI/characters');
+require('dotenv').config();
+const helper = require('./helper.js');
+let prefix = '!r'
 client.on('ready', async () => {
     console.log('Rick Portal Gun Bot is Online :D');
 });
 client.on('message', async (message) => {
-    let charactersResult = await characters.getCharactersByName('rick');
-    console.log(charactersResult);
-    message.channel.send('olá');
-})
-client.login('NjM2MDE4NTcyNzE1NDkxMzI4.Xa5glA.-JuQ7d2Ste2KClAnluDsGmBGZ1k');
+    if (!message.content.startsWith(prefix) || message.author.bot) return;
+    
+    let messageParams = message.content.toLowerCase().split(' ');
+    if(messageParams.length != 3){
+        let embed = new Discord.RichEmbed()
+        embed.addField('**Error**', "Missing parameters on this command")
+        .setColor("#FF0000");
+        message.channel.send(embed)
+        return;
+    }
+
+    let characterName = messageParams[1];
+
+    if(!helper.thisStatusExists(messageParams[2])){
+        let embed = new Discord.RichEmbed()
+        embed.addField('**Error**', `This status parameter don't exists. Status informed: ${messageParams[2]}`)
+        .addField('**Available Status:**', `dead, alive, unknown`)
+        .setColor("#FF0000");
+        message.channel.send(embed)
+        return;
+    }
+
+    let characterStatus = messageParams[2];
+
+    try {
+        let charactersResult = await characters.getCharactersByNameAndStatus(characterName, characterStatus);
+        charactersResult.forEach(character => {        
+            let embed = new Discord.RichEmbed()
+            embed.addField('**Name:**', character.name, true)
+            .addField('**Gender**:', character.gender, true)
+            .addField('**Status**:', character.status, true)
+            .addField('**Origin**:', character.origin.name, true)
+            .addField('**Species:**', character.species, true)
+            .addField('**Last Location**:', character.location.name, true)
+            .setFooter('RickPortalGunBot', 'https://i.imgur.com/wSTFkRM.png')
+            .setImage(character.image)
+            .setColor(0x00FF00);
+            message.channel.send(embed);
+        });
+    } catch (error) {
+        let embed = new Discord.RichEmbed()
+        embed.addField('**Error**', error)
+        .setColor("#FF0000");
+        message.channel.send(embed)
+    }
+
+});
+client.login(process.env.DISCORD_API_KEY);
