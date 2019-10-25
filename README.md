@@ -15,4 +15,4 @@ Just a discord bot which consumes [The Rick And Morty API](https://rickandmortya
 4. ```cd path/to/rick-portal-gun-bot```
 5. ```npm install```
 6. ```npm run dev```
-7. On your server ```!r [character name] [dead]alive[unknown]```
+7. On your server ```!r [character name] [dead|alive|unknown]```
