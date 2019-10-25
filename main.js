@@ -35,16 +35,7 @@ client.on('message', async (message) => {
     try {
         let charactersResult = await characters.getCharactersByNameAndStatus(characterName, characterStatus);
         charactersResult.forEach(character => {        
-            let embed = new Discord.RichEmbed()
-            embed.addField('**Name:**', character.name, true)
-            .addField('**Gender**:', character.gender, true)
-            .addField('**Status**:', character.status, true)
-            .addField('**Origin**:', character.origin.name, true)
-            .addField('**Species:**', character.species, true)
-            .addField('**Last Location**:', character.location.name, true)
-            .setFooter('RickPortalGunBot', 'https://i.imgur.com/wSTFkRM.png')
-            .setImage(character.image)
-            .setColor(0x00FF00);
+            let embed = characters.getcharacterEmbed(character);
             message.channel.send(embed);
         });
     } catch (error) {
