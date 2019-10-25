@@ -9,7 +9,6 @@ client.on('ready', async () => {
 });
 client.on('message', async (message) => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
-    
     let messageParams = message.content.toLowerCase().split(' ');
     if(messageParams.length != 3){
         let embed = new Discord.RichEmbed()
